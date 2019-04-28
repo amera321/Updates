@@ -1,0 +1,36 @@
+---
+title: "Shiny Evaluation Dashboard"
+output: flexdashboard::flex_dashboard
+runtime: shiny
+---
+
+```{r setup, include=FALSE}
+source("MySummaryFunction.R")
+CharacterFields <- starwars %>% select_if(is.character) %>% names()
+```
+
+Inputs {.sidebar}
+-----------------------------------------------------------------
+
+```{r}
+selectInput("FilterBy","Filter By",choices = CharacterFields,
+            selected = "name")
+textInput("FilterValue","Filter Value")
+selectInput("GroupByValue","Group by",choices = CharacterFields,
+            multiple = T)
+```
+
+Output
+-----------------------------------------------------------------
+
+### Chart B
+
+```{r}
+renderTable({
+starwars %>% 
+  mySummary(FilterBy = input$FilterBy, 
+            FilterValue = input$FilterValue,
+            GroupByValue = input$GroupByValue)
+})
+```
+
